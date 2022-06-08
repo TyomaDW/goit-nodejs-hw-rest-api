@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const JoiID = require('joi-oid')
 
 const schemaAddContact = Joi.object({
   name: Joi.string()
@@ -14,6 +15,7 @@ const schemaAddContact = Joi.object({
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{3}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{4}$/)
     .required(),
+  favorite: Joi.boolean().optional()
 })
 
 const schemaUpdateContact = Joi.object({
@@ -30,33 +32,51 @@ const schemaUpdateContact = Joi.object({
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{3}[)]?[-\s]?[0-9]{3}[-\s]?[0-9]{4}$/)
     .optional(),
+  favorite: Joi.boolean().optional()
 }).min(1)
 
 const schemaUpdateStatusContact = Joi.object({
   favorite: Joi.boolean().required()
 })
 
-const validate = (schema, res, obj, next) => {
-  const validationData = schema.validate(obj)
+const schemaId = Joi.object({
+  contactId: JoiID.objectId(),
+})
+
+const validate = (schema, req, res, next) => {
+  const validationData = schema.validate(req.body)
 
   if (validationData.error) {
     return res.status(400)
       .json({ message: validationData.error.message.replace(/"/g, '') })
   }
+  next()
+}
 
+const validateId = (schema, req, res, next) => {
+  const validationID = schema.validate(req.params)
+
+  if (validationID.error) {
+    return res.status(400)
+      .json({ message: validationID.error.message.replace(/"/g, '') })
+  }
   next()
 }
 
 module.exports = {
   validationAddContact: (req, res, next) => {
-    return validate(schemaAddContact, res, req.body, next)
+    return validate(schemaAddContact, req, res, next)
   },
 
   validationUpdateContact: (req, res, next) => {
-    return validate(schemaUpdateContact, res, req.body, next)
+    return validate(schemaUpdateContact, req, res, next)
   },
 
   validationUpdateStatusContact: (req, res, next) => {
-    return validate(schemaUpdateStatusContact, res, req.body, next)
-  }
+    return validate(schemaUpdateStatusContact, req, res, next)
+  },
+
+  validationId: (req, res, next) => {
+    return validateId(schemaId, req, res, next)
+  },
 }
