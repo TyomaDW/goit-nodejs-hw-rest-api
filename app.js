@@ -18,6 +18,7 @@ app.use(logger(formatsLogger))
 app.use(helmet())
 app.use(cors())
 app.use(express.json({ limit: 1000 }))
+app.use(express.static(process.env.PUBLIC_DIR))
 
 app.use('/api/users', usersRouter)
 app.use('/api/contacts', contactsRouter)

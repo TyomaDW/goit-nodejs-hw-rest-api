@@ -17,7 +17,9 @@ const protect = async (req, res, next) => {
     jwt.verify(token, SECRET_KEY, async (error, decodedUser) => {
       const user = await User.findUserById(decodedUser?.id)
 
-      if (error || !user || !user.token || user.token !== token) {
+      if (
+        error || !user || !user.token || user.token !== token
+      ) {
         return res.status(401).json({ message: 'Invalide token' })
       }
 
@@ -30,5 +32,5 @@ const protect = async (req, res, next) => {
 }
 
 module.exports = {
-  protect,
+  protect
 }
