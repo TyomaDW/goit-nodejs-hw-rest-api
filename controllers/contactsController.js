@@ -8,7 +8,8 @@ const {
 } = require('../services/contactsServices')
 
 const getListContactsController = async (req, res) => {
-  const { user: id, query } = req
+  const id = req.user.id
+  const query = req.query
 
   const contacts = await getListContacts(id, query)
 
@@ -17,7 +18,8 @@ const getListContactsController = async (req, res) => {
 }
 
 const getContactByIdController = async (req, res) => {
-  const { user: id, params: contactId } = req
+  const id = req.user.id
+  const contactId = req.params.contactId
 
   const contact = await getContactById(id, contactId)
 
@@ -27,7 +29,8 @@ const getContactByIdController = async (req, res) => {
 }
 
 const addContactController = async (req, res) => {
-  const { user: id, body } = req
+  const id = req.user.id
+  const body = req.body
 
   const contact = await addContact(id, body)
 
@@ -36,7 +39,8 @@ const addContactController = async (req, res) => {
 }
 
 const removeContactController = async (req, res) => {
-  const { user: id, params: contactId } = req
+  const id = req.user.id
+  const contactId = req.params.contactId
 
   const contact = await getContactById(id, contactId)
 
@@ -51,7 +55,9 @@ const removeContactController = async (req, res) => {
 }
 
 const updateContactController = async (req, res) => {
-  const { user: id, params: contactId, body } = req
+  const id = req.user.id
+  const contactId = req.params.contactId
+  const body = req.body
 
   const contact = await updateContact(id, contactId, body)
 
@@ -60,8 +66,10 @@ const updateContactController = async (req, res) => {
     : res.status('200').json({ status: 'success', contact })
 }
 
-const updateStatusContactController = async (req, res, next) => {
-  const { user: id, params: contactId, body } = req
+const updateStatusContactController = async (req, res) => {
+  const id = req.user.id
+  const contactId = req.params.contactId
+  const body = req.body
 
   const contact = await updateStatusContact(id, contactId, body)
 
