@@ -7,7 +7,7 @@ const login = async ({ email, password }) => {
   const user = await findUserByEmail(email)
   const isValidPassword = await user?.validPassword(password)
 
-  if (!user || !isValidPassword) {
+  if (!user || !isValidPassword || !user.verify) {
     return null
   }
 

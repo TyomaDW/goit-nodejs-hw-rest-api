@@ -7,12 +7,12 @@ const isAccessible = async (path) => {
     .catch(() => false)
 }
 
-const createFoldereIsNotExist = async (folder) => {
+const createFolderIsNotExist = async (folder) => {
   if (!(await isAccessible(folder))) {
     await fs.mkdir(folder)
   }
 }
 
 module.exports = {
-  createFoldereIsNotExist
+  createFolderIsNotExist
 }

@@ -1,7 +1,7 @@
 const app = require('../app')
 const path = require('path')
 const db = require('../model/db')
-const { createFoldereIsNotExist } = require('../helpers/foldersCreator')
+const { createFolderIsNotExist } = require('../helpers/foldersCreator')
 
 const PORT = process.env.PORT || 3000
 const UPLOAD_DIR = path.join(
@@ -18,8 +18,8 @@ const start = async () => {
   try {
     await db()
     app.listen(PORT, async () => {
-      await createFoldereIsNotExist(UPLOAD_DIR)
-      await createFoldereIsNotExist(AVATARS_DIR)
+      await createFolderIsNotExist(UPLOAD_DIR)
+      await createFolderIsNotExist(AVATARS_DIR)
       console.log('\x1b[32m%s\x1b[0m',
         `Server running. Use our API on port: ${PORT}`)
     })

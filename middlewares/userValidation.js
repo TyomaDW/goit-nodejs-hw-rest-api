@@ -26,6 +26,17 @@ const schemaSubscriptionUser = Joi.object({
     .required(),
 })
 
+const schemaReVerifyUser = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2, tlds: { allow: ['com', 'net', 'org', 'ru', 'ua'] }
+    })
+    .pattern(
+      /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i
+    )
+    .required(),
+})
+
 const validate = (schema, req, res, next) => {
   const validationData = schema.validate(req.body)
 
@@ -42,5 +53,8 @@ module.exports = {
   },
   validationSubscription: (req, res, next) => {
     return validate(schemaSubscriptionUser, req, res, next)
+  },
+  validationReVerify: (req, res, next) => {
+    return validate(schemaReVerifyUser, req, res, next)
   }
 }
