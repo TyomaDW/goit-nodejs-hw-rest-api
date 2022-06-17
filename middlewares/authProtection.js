@@ -20,7 +20,7 @@ const protect = async (req, res, next) => {
       if (
         error || !user || !user.token || user.token !== token
       ) {
-        return res.status(401).json({ message: 'Invalide token' })
+        return res.status(401).json({ message: 'Invalid token' })
       }
 
       req.user = user
