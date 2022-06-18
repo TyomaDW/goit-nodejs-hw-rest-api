@@ -3,6 +3,8 @@ const router = express.Router()
 
 const {
   registrationController,
+  verifyController,
+  reVerifyController,
   loginController,
   logoutController,
   currentUserController,
@@ -13,6 +15,7 @@ const {
 const {
   validationRegLog,
   validationSubscription,
+  validationReVerify,
 } = require('../../middlewares/userValidation')
 
 const { asyncWrapper } = require('../../helpers/apiHelpers')
@@ -44,5 +47,9 @@ router.patch('/subscription',
 router.patch('/avatars',
   protect, upload.single('avatar'), asyncWrapper(avatarController)
 )
+
+router.get('/verify/:verificationToken', asyncWrapper(verifyController))
+
+router.get('/verify/', validationReVerify, asyncWrapper(reVerifyController))
 
 module.exports = router

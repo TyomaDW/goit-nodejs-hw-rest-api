@@ -4,11 +4,14 @@ const path = require('path')
 const { login, logout } = require('../services/authServices')
 const {
   createUser,
+  verifyUser,
+  reVerifyUser,
   findUserById,
   findUserByEmail,
   updateSubscription,
   updateAvatar,
 } = require('../services/userServices')
+
 const { editAvatar } = require('../helpers/avatarEditor')
 
 const AVATARS_DIR = path.join(
@@ -30,6 +33,32 @@ const registrationController = async (req, res) => {
 
   res.status(201)
     .json({ user: { email, subscription, avatarURL } })
+}
+
+const verifyController = async (req, res) => {
+  const data = req.params.verificationToken
+  const validity = await verifyUser(data)
+
+  if (validity) {
+    return res.status(201)
+      .json({ message: 'Verification successful' })
+  }
+
+  res.status(404)
+    .json({ message: 'User not found' })
+}
+
+const reVerifyController = async (req, res) => {
+  const email = req.body.email
+  const reValidity = await reVerifyUser(email)
+
+  if (reValidity) {
+    return res.status(201)
+      .json({ message: 'Verification email sent' })
+  }
+
+  res.status(400)
+    .json({ message: 'Verification has already been passed' })
 }
 
 const loginController = async (req, res) => {
@@ -90,8 +119,6 @@ const avatarController = async (req, res) => {
     const newAvatarURL =
       `${protocol}://${host}/${process.env.FOLDER_AVATARS}/${name}`
 
-    console.log(newAvatarURL)
-
     const url = await updateAvatar(id, newAvatarURL)
 
     return res.status(200).json({ avatarURL: url })
@@ -102,6 +129,8 @@ const avatarController = async (req, res) => {
 
 module.exports = {
   registrationController,
+  verifyController,
+  reVerifyController,
   loginController,
   logoutController,
   currentUserController,
